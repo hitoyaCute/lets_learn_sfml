@@ -9,9 +9,12 @@
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Window/WindowEnums.hpp>
+#include <SFML/Graphics/Image.hpp>
 #include <algorithm>
 #include <cstdint>
+#include <iostream>
 #include <random>
+#include <unistd.h>
 #include <vector>
 #include "config.hpp"
 #include "star.hpp"
@@ -74,18 +77,18 @@ void updateGeometry(uint32_t idx, const Star& s, sf::VertexArray& va) {
   va[i + 2].position = {p.x + r, p.y + r};
 
   // bottom triangle
-  // va[i + 3].position = va[i + 0].position;
+  va[i + 3].position = va[i + 0].position;
   va[i + 4].position = {p.x - r, p.y + r};
-  // va[i + 5].position = va[i + 2].position;
+  va[i + 5].position = va[i + 2].position;
 
   // setting colors
   const sf::Color color{c,c,c};
   va[i + 0].color = color;
   va[i + 1].color = color;
   va[i + 2].color = color;
-  va[i + 3] = va[i + 0];
+  va[i + 3].color = va[i + 0].color;
   va[i + 4].color = color;
-  va[i + 5] = va[i + 2];
+  va[i + 5].color = va[i + 2].color;
 }
 
 
@@ -101,9 +104,16 @@ int main (int argc, char *argv[]) {
   star_texture.setSmooth(true);
   const auto a = star_texture.generateMipmap();
   
+  sf::Image dd;
+  bool is_loaded = dd.loadFromFile("../res/star.png");
+
+  window.setIcon(dd);
+  
 
   std::vector<Star> stars = createStars(conf::count, conf::far);
   sf::VertexArray va{sf::PrimitiveType::Triangles, 6 * conf::count};
+
+  std::cout << getpid() << std::endl;
 
   const auto texture_size_f = static_cast<sf::Vector2f>(star_texture.getSize());
   for (uint32_t idx{conf::count}; idx--;) {
@@ -114,10 +124,13 @@ int main (int argc, char *argv[]) {
     va[i + 2].texCoords = {texture_size_f.x, texture_size_f.y};
 
     // bottom triangle
-    // va[i + 3] = va[i + 0];
+    va[i + 3] = va[i + 0];
     va[i + 4].texCoords = {0.f, texture_size_f.y};
-    // va[i + 5] = va[i + 2];
+    va[i + 5] = va[i + 2];
   }
+
+  std::cout << texture_size_f.x << " ";
+  std::cout <<texture_size_f.y  << std::endl;
 
   uint32_t first = 0;
   while (window.isOpen()) {

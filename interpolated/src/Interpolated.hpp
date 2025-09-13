@@ -92,7 +92,7 @@ public:
     return getValue();
   }
 
-  // getter operator
+  // setter operator
   void operator=(const T& new_val){
     setValue(new_val);
   }
