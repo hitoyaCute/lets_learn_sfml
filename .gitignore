@@ -1,8 +1,13 @@
-./interpolated/build
-./stars/build
-./stars/.cache
-./interpolated/.cache
 interpolated/build
 stars/build
+dragg/build
+
 interpolated/.cache
 stars/.cache
+dragg/.cache
+
+
+.dragg
+
+.temp.md
+

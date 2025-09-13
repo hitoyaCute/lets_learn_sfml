@@ -1,0 +1,70 @@
+// <range> -*- C++ -*-
+
+#include <array>
+namespace ranges {
+
+
+/// literals must be binary operatable value
+template <typename Literals>
+class stickyRange {
+  Literals range[2];
+  Literals value;
+
+public:
+  stickyRange(Literals val, Literals range_[2]) {
+    range = range_;
+    value = val;
+  }
+
+  // setting value
+  void operator=(Literals val) {
+    value = val;
+  }
+
+  void setRange(Literals range_) {
+    range = range_;
+  }
+
+  // a operatoor to check if a value was inside the range
+  bool isInside(Literals val) {
+    return (range[0] <= val) and (range[1] >= val);
+  }
+
+  // cast to original type used as getter but apply the range on the value returning
+  [[nodiscard]] operator Literals(){
+    return (range[0] ? range[0] < value : range[1] ) ? range[1] > value : value; 
+  }
+};
+
+template <typename Literals>
+class stickyRangeVect2 {
+  stickyRange<Literals> range_x;
+  stickyRange<Literals> range_y;
+public:
+  stickyRangeVect2(Literals value_[2], Literals range_x_[2], Literals range_y_[2]) {
+    range_x = {value_[0], range_x_};
+    range_y = {value_[1], range_y_};
+  }
+  
+  // setting value and applying range
+  void operator=(Literals new_val[2]) {
+    range_x = new_val[0];
+    range_y = new_val[1];
+  }
+
+  [[nodiscard]]  operator std::array<Literals, 2>() {
+    return {Literals{range_x}, Literals{range_y}};
+  }
+};
+
+
+
+
+}; // namespace ranges
+
+
+
+
+
+
+
