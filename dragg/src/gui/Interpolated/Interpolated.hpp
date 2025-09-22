@@ -1,8 +1,7 @@
 #pragma once
-
 #include <chrono>
-namespace Interpolation {
 
+namespace Interpolation {
 
 enum Easing {
   None,
@@ -13,13 +12,9 @@ enum Easing {
   easeInOutExponential,
   easeOutBack,
   easeOutElastic
-  
 };
 
-
 float getRatio(float t, Easing transition);
-
-
 
 template <typename T>
 class Interpolated {
@@ -27,14 +22,11 @@ class Interpolated {
   T start{};
   // target value
   T end{};
-
   // the time when the transition starts
   float initial_time{};
 
   float speed{1.f};
-
-  
-    // get the time have passed after the transition
+  // get the time have passed after the transition
   [[nodiscard]] static float getCurrentTime(){
     // get current time
     const auto now = std::chrono::steady_clock::now();
@@ -42,40 +34,29 @@ class Interpolated {
     // convert to float
     const auto seconds = std::chrono::duration_cast<std::chrono::duration<float>>(duration);
     return seconds.count();
-  
   }
-
   // get the time elapsed since the last value change
   [[nodiscard]] float getElapsedSec() const {
     return getCurrentTime() - initial_time;
   }
-
-
   
   void setValue(const T& new_val){
     start = getValue();
     end = new_val;
     initial_time = getCurrentTime();
   }
-
-  
   // return the current value
   [[nodiscard]] T getValue() const {
     // current transition time
     const float elapsed = getElapsedSec();
     // when transition is done, return final
-    
     const float t = elapsed * speed;
 
     if (t >= 1.0f) {return end;}
-
-
-
     // compute interpolated value
     const T delta{end - start};
     return start + delta * getRatio(t, transition);
   }
-  
 
 public:
   Easing transition{Easing::linear};
@@ -86,17 +67,14 @@ public:
   void setDuration(float duration) {
     speed = 1.f / duration;
   }
-
   // cast operator
   [[nodiscard]] operator T() const {
     return getValue();
   }
-
   // getter operator
   void operator=(const T& new_val){
     setValue(new_val);
   }
-
 };
 
 namespace EasingFunc {
@@ -109,7 +87,3 @@ namespace EasingFunc {
 };
 
 }; // namespace Interpolation
-//
-//
-
-

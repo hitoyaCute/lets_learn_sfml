@@ -1,10 +1,7 @@
 #include "events.hpp"
 #include <SFML/Window/Keyboard.hpp>
 
-
-
 bool vals::is_entered = false;
-
 
 void process_event(sf::Window& window){
   while (const std::optional event = window.pollEvent()) {

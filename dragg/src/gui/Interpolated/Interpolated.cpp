@@ -1,16 +1,14 @@
 #include "Interpolated.hpp"
-#include <SFML/System/Angle.hpp>
 #include <cmath>
+#include <SFML/System/Angle.hpp>
 
 namespace Interpolation {
-
-
 
 namespace EasingFunc {
 
 const float easeInOutElastic(const float t) {
   const float c5 = (2 * sf::priv::pi) / 4.5;
-  
+ 
   if (t == 0.f) {
     return 0.f;
   } else if (t == 1.f) {
@@ -71,8 +69,6 @@ const float easeInOutExponential(const float t){
     return (2.f - powf(2.f, -20.f * t + 10.f)) / 2.f;
   }
 }
-
-
 }; // namespace EasingFunc
 
 float getRatio(float t, Easing transition) {
@@ -97,5 +93,3 @@ float getRatio(float t, Easing transition) {
 }
 
 }; // namespace Interpolation
-
-

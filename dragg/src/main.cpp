@@ -1,60 +1,54 @@
-#include <SFML/Graphics/RectangleShape.hpp>
-#include <SFML/System/Vector2.hpp>
-#include <iostream>
 #include <random>
+#include <ostream>
+#include <iostream>
 #include <SFML/Window/Mouse.hpp>
+#include <SFML/Graphics/Rect.hpp>
 #include <SFML/Graphics/Image.hpp>
+#include <SFML/System/Vector2.hpp>
 #include <SFML/Window/Keyboard.hpp>
 #include <SFML/Graphics/Texture.hpp>
+#include <SFML/Graphics/VertexArray.hpp>
 #include <SFML/Graphics/CircleShape.hpp>
+#include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/PrimitiveType.hpp>
-#include "config.hpp"
+#include <SFML/Graphics/RectangleShape.hpp>
+#include "gui/Shapes/Shapes.hpp"
 #include "range"
+#include "config.hpp"
 #include "gui/RenderManager.hpp"
 // #include "gui/Events/events.hpp"
 // #include "gui/Interpolated/Interpolated.hpp"
 
-
 int main(){
-  MEU::Renderer window(conf::win_size, "viewport", sf::State::Fullscreen);
+  MEU::Renderer<sf::RenderWindow> window{conf::win_size, "viewport", sf::State::Fullscreen};
   window.setFramerateLimit(60);
   window.setVerticalSyncEnabled(true);
   sf::CircleShape cc{60.f,50};
   
-  sf::View v{{0,0},{100,100}};
-  v.move({10,0});
-  
+  sf::View v{sf::Vector2f{500,500}/2.f,{500,500}};
   sf::RenderTexture vv{conf::win_size};
   vv.setView(v);
   sf::CircleShape circlea{};
-  circlea.setRadius(10.f);
+  circlea.setRadius(100.f);
   circlea.setFillColor(sf::Color::Red);
-  circlea.setPosition({0,0});
+  circlea.setPosition({100,-100});
 
-  vv.clear(sf::Color::Cyan);
+  vv.clear(sf::Color::Black);
   vv.draw(circlea);
   vv.display();
 
   const sf::Texture* vv_img = &vv.getTexture();
-  const auto vv_size = sf::Vector2f{vv.getSize()};
+  auto vv_size = sf::Vector2f{vv.getSize()};
 
   // thing that will hold the Texture
-  auto viewport = MEU::sfShapeToVertexArray(sf::RectangleShape{{500,500}}, 4, sf::Color{255,255,255});
-  
-  viewport[0].texCoords = {0, 0};
-  viewport[1].texCoords = {vv_size.x, 0};
-  viewport[2].texCoords = {0, vv_size.y};
-  viewport[3].texCoords = {vv_size.x, vv_size.y};
-  MEU::Drawable viewport_drawable{viewport, 4, {100,100}};
 
-
+  // auto viewport = MEU::sfShapeToVertexArray(sf::RectangleShape{{500,500}}, 4, sf::Color{255,255,255});
+  sf::VertexArray viewport{sf::PrimitiveType::TriangleFan, 8*4};
+  MEU::CreateRoundedRect(viewport, 8*4, 50, {500,500}, {0,0});
   
+  MEU::apply_texture(viewport, 8*4, vv_size);
 
-  
-
-  
-  
-
+  MEU::Drawable viewport_drawable{viewport, 8*4, {100,100}};
   // objects
   // sf::CircleShape obj1{50.f,50};
   // MEU::Drawable OBJ1{MEU::sfShapeToVertexArray(obj1, 50, sf::Color{255,0,0,175}),
@@ -91,9 +85,9 @@ int main(){
       }
 
       if (const auto button = event->getIf<sf::Event::MouseButtonPressed>()) {
-        
         const auto mousePos = sf::Mouse::getPosition(window.getWindowRef());
-        MEU::Drawable* picked = window.getItem(objLists);
+        
+        MEU::Drawable* picked = window.getItem(objLists, mousePos);
         if (button->button == sf::Mouse::Button::Left) {
         // Start dragging if clicked object
           if (picked) {
@@ -108,7 +102,6 @@ int main(){
         }
       }
       
-
       if (auto button = event->getIf<sf::Event::MouseButtonReleased>()) {
         if (button->button == sf::Mouse::Button::Left) {
           selected = nullptr; // stop dragging
@@ -123,7 +116,6 @@ int main(){
       }
     }
 
-
     window.clear(sf::Color::White);
     sf::RenderStates states;
     // states.transform.translate(vv_size * 0.5f);
@@ -134,9 +126,7 @@ int main(){
     // window.ObjDraw(OBJ1);
     // window.ObjDraw(OBJ2);
     window.display();
-   
   }
-  
 }
 
 
