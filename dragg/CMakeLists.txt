@@ -22,7 +22,7 @@ FetchContent_Declare(SFML
 FetchContent_MakeAvailable(SFML)
 
 add_executable(${PROJECT_NAME}
-  ./src/main.cpp
+  ./src/app/main.cpp
   ./src/gui/RenderManager.cpp
   ./src/gui/Shapes/BasicShape.cpp
   # ./src/gui/Events/event.cpp

@@ -1,6 +1,5 @@
 #pragma once
 #include <cstddef>
-#include <functional>
 #include <unordered_map>
 #include <SFML/Graphics/View.hpp>
 #include <SFML/Window/Window.hpp>
@@ -13,7 +12,7 @@
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/RenderTexture.hpp>
-
+#include "Drawable.hpp"
 
 namespace MEU {
 
@@ -25,20 +24,6 @@ struct UserState {
     
   };
   State interact_mode = Hovering;
-};
-
-struct Drawable {
-  sf::VertexArray* object;
-  sf::VertexArray* objBound;
-  const size_t size;
-  sf::Color id;
-  sf::Vector2f position;
-  void setPosition(sf::Vector2f pos);
-  void setFillColor(sf::Color col);
-  Drawable(sf::VertexArray& arr, size_t size_, sf::Color id_, sf::Vector2f pos);
-  Drawable(sf::VertexArray& arr, size_t size_, sf::Vector2f pos);
-
-  std::function<void(Drawable self, const UserState& button)>* interact;
 };
 
 template<typename RenderTarget>
@@ -90,6 +75,17 @@ public:
   void draw(const Drawable& drawable, const sf::RenderStates& states = sf::RenderStates::Default) {
     target.draw(*drawable.object, states);
   }
+  ////////////////////////////////////////////////////////////
+  /// \brief Draw a drawable object to the render target
+  ///
+  /// \param drawable Object to draw
+  /// \param states   Render states to use for drawing
+  ///
+  ////////////////////////////////////////////////////////////
+  void draw(const ViewPort& viewport) {
+    target.draw();
+  }
+
 
   ////////////////////////////////////////////////////////////
   /// \brief Draw a interactable object to the picking buffer and render target
@@ -209,6 +205,61 @@ public:
 
 
 };
+
+class ViewPort {
+  Renderer<sf::RenderTexture>* target;
+  // position relative to the parent holder
+  sf::Vector2f pos;
+  // the view.....
+  sf::View view;
+
+public:
+  ////////////////////////////////////////////////////////////
+  /// \brief Change the current active view
+  ///
+  /// The view is like a 2D camera, it controls which part of
+  /// the 2D scene is visible, and how it is viewed in the
+  /// render target.
+  /// The new view will affect everything that is drawn, until
+  /// another view is set.
+  /// The render target keeps its own copy of the view object,
+  /// so it is not necessary to keep the original one alive
+  /// after calling this function.
+  /// To restore the original view of the target, you can pass
+  /// the result of `getDefaultView()` to this function.
+  ///
+  /// \param view New view to use
+  ///
+  /// \see `getView`, `getDefaultView`
+  ///
+  ////////////////////////////////////////////////////////////
+  void setView(const sf::View& view){
+    target->setView(sf::View());
+  }
+  ////////////////////////////////////////////////////////////
+  /// \brief Move the view
+  ///
+  ///
+  /// \param direction the array of value to move the view
+  ///
+  ///
+  ////////////////////////////////////////////////////////////
+  void move(const sf::Vector2f direction) {
+    pos += direction;
+  }
+
+   ////////////////////////////////////////////////////////////
+  /// \brief convertion of viewport to Drawable
+  ///
+  /// this should be able to pass on drawable things and it will be converted automatically
+  ///
+  ///
+  ////////////////////////////////////////////////////////////
+  [[nodiscard]] operator std::pair<MEU::Drawable, sf::View>();
+
+};
+
+
 
 constexpr sf::VertexArray sfShapeToVertexArray(const sf::Shape& shape, size_t size, sf::Color fill_color = sf::Color(0,0,0));
 
