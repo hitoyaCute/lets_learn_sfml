@@ -1,21 +1,19 @@
 // <range> -*- C++ -*-
-
+#pragma once
 #include <array>
-namespace ranges {
 
+namespace ranges {
 
 /// literals must be binary operatable value
 template <typename Literals>
 class stickyRange {
   Literals range[2];
   Literals value;
-
 public:
   stickyRange(Literals val, Literals range_[2]) {
     range = range_;
     value = val;
   }
-
   // setting value
   void operator=(Literals val) {
     value = val;
@@ -24,12 +22,10 @@ public:
   void setRange(Literals range_) {
     range = range_;
   }
-
   // a operatoor to check if a value was inside the range
   bool isInside(Literals val) {
     return (range[0] <= val) and (range[1] >= val);
   }
-
   // cast to original type used as getter but apply the range on the value returning
   [[nodiscard]] operator Literals(){
     return (range[0] ? range[0] < value : range[1] ) ? range[1] > value : value; 
@@ -57,14 +53,5 @@ public:
   }
 };
 
-
-
-
 }; // namespace ranges
-
-
-
-
-
-
 

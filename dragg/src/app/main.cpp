@@ -13,9 +13,10 @@
 #include <SFML/Graphics/PrimitiveType.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
 #include "gui/Shapes/Shapes.hpp"
-#include "range"
+// #include "range"
 #include "config.hpp"
 #include "gui/RenderManager.hpp"
+#include "gui/Viewport.hpp"
 // #include "gui/Events/events.hpp"
 // #include "gui/Interpolated/Interpolated.hpp"
 
@@ -23,22 +24,26 @@ int main(){
   MEU::Renderer<sf::RenderWindow> window{conf::win_size, "viewport", sf::State::Fullscreen};
   window.setFramerateLimit(60);
   window.setVerticalSyncEnabled(true);
-  sf::CircleShape cc{60.f,50};
   
   sf::View v{sf::Vector2f{500,500}/2.f,{500,500}};
-  sf::RenderTexture vv{conf::win_size};
-  vv.setView(v);
-  sf::CircleShape circlea{};
-  circlea.setRadius(100.f);
+
+  MEU::ViewPort viewport_{sf::VertexArray{sf::PrimitiveType::TriangleFan, 8*4}, {2000,2000}};
+
+
+  viewport_.setView(v);
+  MEU::Drawable circlea{MEU::sfShapeToVertexArray(sf::CircleShape(100,16), 16), 16, {0.f,0.f}};
   circlea.setFillColor(sf::Color::Red);
   circlea.setPosition({100,-100});
+  
+  viewport_.draw(circlea);
+  
+  viewport_.clear();
+  viewport_.draw(circlea);
+  viewport_.display();
 
-  vv.clear(sf::Color::Black);
-  vv.draw(circlea);
-  vv.display();
 
-  const sf::Texture* vv_img = &vv.getTexture();
-  auto vv_size = sf::Vector2f{vv.getSize()};
+  const sf::Texture* vv_img = &viewport_.getTexture();
+  auto vv_size = sf::Vector2f{viewport_.getSize()};
 
   // thing that will hold the Texture
 

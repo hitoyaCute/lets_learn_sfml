@@ -32,12 +32,14 @@ private:
   RenderTarget target;
   sf::RenderTexture pickingBuffer;
 public:
-  Renderer(sf::Vector2u size, std::string title = "SFML Project", sf::State state = sf::State::Windowed);
+  Renderer() = default;
   ////////////////////////////////////////////////////////////
   /// \render target for textures
   ///
   ////////////////////////////////////////////////////////////
   Renderer(sf::Vector2u size);
+
+  Renderer(sf::Vector2u size, std::string title , sf::State state = sf::State::Windowed);
   ////////////////////////////////////////////////////////////
   /// \brief Update the contents of the target texture
   ///
@@ -73,19 +75,8 @@ public:
   ///
   ////////////////////////////////////////////////////////////
   void draw(const Drawable& drawable, const sf::RenderStates& states = sf::RenderStates::Default) {
-    target.draw(*drawable.object, states);
+    target.draw(&drawable.object, states);
   }
-  ////////////////////////////////////////////////////////////
-  /// \brief Draw a drawable object to the render target
-  ///
-  /// \param drawable Object to draw
-  /// \param states   Render states to use for drawing
-  ///
-  ////////////////////////////////////////////////////////////
-  void draw(const ViewPort& viewport) {
-    target.draw();
-  }
-
 
   ////////////////////////////////////////////////////////////
   /// \brief Draw a interactable object to the picking buffer and render target
@@ -95,10 +86,10 @@ public:
   ///
   ////////////////////////////////////////////////////////////
   void ObjDraw(const Drawable& drawable, const sf::RenderStates& states = sf::RenderStates::Default) {
-    if (drawable.objBound == nullptr or drawable.object == nullptr) {
+    if (drawable.objBound == nullptr) {
       throw std::runtime_error("uhhh you missed the part where you reject to give pointer to a object at Renderer::ObjDraw(const Drawable&, const sf::RenderStates)");
     }
-    target.draw(*drawable.object, states);
+    target.draw(drawable.object, states);
     pickingBuffer.draw(*drawable.objBound);
   }
   ////////////////////////////////////////////////////////////
@@ -201,80 +192,22 @@ public:
   ////////////////////////////////////////////////////////////
   [[nodiscard]] std::optional<sf::Event> pollEvent();
 
+  [[nodiscard]] const sf::Texture& getTexture() const {
+    return target.getTexture();
+  }
+
+  [[nodiscard]] const sf::Vector2f& getSize() const {
+    return target.getSize();
+  }
+
   [[nodiscard]] sf::WindowBase& getWindowRef();
 
 
 };
 
-class ViewPort {
-  Renderer<sf::RenderTexture>* target;
-  // position relative to the parent holder
-  sf::Vector2f pos;
-  // the view.....
-  sf::View view;
+sf::VertexArray sfShapeToVertexArray(const sf::Shape& shape, size_t size, sf::Color fill_color = sf::Color(0,0,0));
 
-public:
-  ////////////////////////////////////////////////////////////
-  /// \brief Change the current active view
-  ///
-  /// The view is like a 2D camera, it controls which part of
-  /// the 2D scene is visible, and how it is viewed in the
-  /// render target.
-  /// The new view will affect everything that is drawn, until
-  /// another view is set.
-  /// The render target keeps its own copy of the view object,
-  /// so it is not necessary to keep the original one alive
-  /// after calling this function.
-  /// To restore the original view of the target, you can pass
-  /// the result of `getDefaultView()` to this function.
-  ///
-  /// \param view New view to use
-  ///
-  /// \see `getView`, `getDefaultView`
-  ///
-  ////////////////////////////////////////////////////////////
-  void setView(const sf::View& view){
-    target->setView(sf::View());
-  }
-  ////////////////////////////////////////////////////////////
-  /// \brief Move the view
-  ///
-  ///
-  /// \param direction the array of value to move the view
-  ///
-  ///
-  ////////////////////////////////////////////////////////////
-  void move(const sf::Vector2f direction) {
-    pos += direction;
-  }
-
-   ////////////////////////////////////////////////////////////
-  /// \brief convertion of viewport to Drawable
-  ///
-  /// this should be able to pass on drawable things and it will be converted automatically
-  ///
-  ///
-  ////////////////////////////////////////////////////////////
-  [[nodiscard]] operator std::pair<MEU::Drawable, sf::View>();
-
-};
-
-
-
-constexpr sf::VertexArray sfShapeToVertexArray(const sf::Shape& shape, size_t size, sf::Color fill_color = sf::Color(0,0,0));
-
-constexpr void apply_texture(sf::VertexArray& arr,
-                             const uint32_t vertex_ammount,
-                             const sf::Vector2f texture_size) {
-  //////////////////////////////////////////////////////////////
-  sf::Vector2f arr_size = arr.getBounds().size;
-
-  for (uint8_t j{0}; j < vertex_ammount; j++) {
-    sf::Vector2f current_vertex_pos = arr[j].position;
-    float ratio_x = current_vertex_pos.x / arr_size.x; // the ammounf of the vertex.x is placed before reaching the size.x
-    float ratio_y = current_vertex_pos.y / arr_size.y; // the ammounf of the vertex.y is placed before reaching the size.y
-    arr[j].texCoords = {ratio_x * texture_size.x, ratio_y * texture_size.y};
-  }
-}
+void apply_texture(sf::VertexArray& arr, const uint32_t vertex_ammount, const sf::Vector2f texture_size);
 
 }; // namespace MEU
+
