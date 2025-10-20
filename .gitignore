@@ -11,3 +11,5 @@ dragg/.cache
 
 .temp.md
 
+/calculator/.cache
+/calculator/build
