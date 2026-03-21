@@ -1,0 +1,29 @@
+
+
+
+
+main:
+
+	process:
+
+
+
+
+
+renderer:
+
+	objects:
+		base drawable                                                       // stuff than can be drawn
+		base renderTarget                                                   // a base for thing where you can draw stuff
+		base interactable: drawable  		                                // object that contain event listener and cabable of being
+																			// added to the object picker lists
+		
+		class renderWindow: renderTarget                                    // the window and you can pass regular sfml drawables but also
+																			// you can pass custom drawable
+		
+		class renderPort: renderTarget, interactable                        // a small window like thing on a buffer
+		
+
+
+
+
