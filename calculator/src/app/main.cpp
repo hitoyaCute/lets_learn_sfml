@@ -37,7 +37,7 @@ int main() {
     window.setFramerateLimit(60);
     // window.setVerticalSyncEnabled(true);
 
-    std::map<std::string,ButtonState> buttons;
+    std::vector<ButtonState> buttons;
     setup_numpad(buttons);
 
     sf::Sprite sprite (texture);

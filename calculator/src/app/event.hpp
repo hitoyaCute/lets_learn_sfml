@@ -2,7 +2,6 @@
 
 #include "app/helpers.hpp"
 #include <SFML/Graphics/RenderWindow.hpp>
-#include <map>
-#include <string>
+#include <vector>
 
-void process_event(sf::RenderWindow& win, std::map<std::string, ButtonState>& buttons);
+void process_event(sf::RenderWindow& win, std::vector<ButtonState>& buttons);
