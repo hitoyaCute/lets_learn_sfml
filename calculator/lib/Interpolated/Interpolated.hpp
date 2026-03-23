@@ -72,19 +72,26 @@ public:
   Easing transition;
   Interpolated(const T& initial_val = {}):
     start{initial_val},
-    end{start},
+    end{initial_val},
     transition{Easing::linear}{}
   Interpolated(const T& initial_val, const Easing func):
     start{initial_val},
-    end{start},
+    end{initial_val},
     transition(func){}
   Interpolated(const T& initial_val, const float duration, const Easing func = linear):
     start{initial_val},
-    end{start},
+    end{initial_val},
     transition(func){setDuration(duration);}
 
   void setDuration(float duration) {
     speed = 1.f / duration;
+  }
+
+  // reset everything and return the value to the start
+  void reset(const T& val) {
+    initial_time = getCurrentTime();
+    start = val;
+    end = val;
   }
 
   // cast operator

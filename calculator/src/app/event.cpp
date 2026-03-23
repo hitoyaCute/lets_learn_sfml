@@ -7,9 +7,9 @@
 #include <SFML/Window/Keyboard.hpp>
 #include <SFML/Window/Mouse.hpp>
 #include <cstdio>
-#include <vector>
+#include <array>
 
-ButtonState* get_button_at(const sf::Vector2f& pos, std::vector<ButtonState>& buttons) {
+ButtonState* get_button_at(const sf::Vector2f& pos, std::array<ButtonState, 19>& buttons) {
     for (size_t i =0; i < buttons.size(); i++){
         if (sf::Rect<float>{buttons[i].pos, buttons[i].size}.contains(pos)) {
             return &buttons[i];
@@ -18,7 +18,7 @@ ButtonState* get_button_at(const sf::Vector2f& pos, std::vector<ButtonState>& bu
     return 0;
 }
 
-void process_event(sf::RenderWindow &win, std::vector<ButtonState>& buttons) {
+void process_event(sf::RenderWindow &win, std::array<ButtonState, 19>& buttons) {
     // process events
     while (const auto event = win.pollEvent()) {
         if (event->is<sf::Event::Closed>()) {
@@ -34,7 +34,6 @@ void process_event(sf::RenderWindow &win, std::vector<ButtonState>& buttons) {
             if (button and mouse->button == sf::Mouse::Button::Left) {
                 // printf("pressed\n");
                 button->is_click = true;
-                button->color_scale.setDuration(0.4);
                 button->color_scale = -1;
             }
         } else if (const auto mouse = event->getIf<sf::Event::MouseButtonReleased>()) {
@@ -43,8 +42,7 @@ void process_event(sf::RenderWindow &win, std::vector<ButtonState>& buttons) {
             if (button and mouse->button == sf::Mouse::Button::Left) {
                 // printf("released\n");
                 button->is_click = false;
-                button->color_scale.setDuration(0.01);
-                button->color_scale = 0;
+                button->color_scale.reset(0);
             }
         }
     }
@@ -56,14 +54,11 @@ void process_event(sf::RenderWindow &win, std::vector<ButtonState>& buttons) {
         if(not inside and button.is_hover) {
             button.is_hover = false;
             button.is_click = false;
-            button.border_scale.setDuration(0.01);
-            button.color_scale.setDuration(0.01);
-            button.color_scale  = 0;
-            button.border_scale = 0;
+            button.color_scale.reset(0);
+            button.border_scale.reset(0);
         }
         else if(inside and not button.is_hover) {
             button.is_hover = true;
-            button.border_scale.setDuration(0.6);
             button.border_scale = -1;
         }
     }

@@ -2,6 +2,6 @@
 
 #include "app/helpers.hpp"
 #include <SFML/Graphics/RenderWindow.hpp>
-#include <vector>
+#include <array>
 
-void process_event(sf::RenderWindow& win, std::vector<ButtonState>& buttons);
+void process_event(sf::RenderWindow& win, std::array<ButtonState, 19>& buttons);

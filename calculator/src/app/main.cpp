@@ -1,3 +1,4 @@
+#include <array>
 #include <cstdio>
 #include <SFML/Window/Mouse.hpp>
 #include <SFML/Graphics/Text.hpp>
@@ -37,7 +38,7 @@ int main() {
     window.setFramerateLimit(60);
     // window.setVerticalSyncEnabled(true);
 
-    std::vector<ButtonState> buttons;
+    std::array<ButtonState, 19> buttons;
     setup_numpad(buttons);
 
     sf::Sprite sprite (texture);

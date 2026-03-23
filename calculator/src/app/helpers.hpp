@@ -4,12 +4,13 @@
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/Text.hpp>
 #include <SFML/System/Vector2.hpp>
+#include <array>
 #include <cstdint>
 #include <string>
 
 
 struct ButtonState {
-    sf::Vector2f pos;
+    sf::Vector2f pos = {0,0};
     sf::Vector2f size = {94, 60};
     std::string name = "";
     // the transition animation value
@@ -20,12 +21,13 @@ struct ButtonState {
     Interpolation::Interpolated<uint8_t> color_scale {0, 0.4f};
     bool is_hover = false;
     bool is_click = false;
+    ButtonState() = default;
     ButtonState(const sf::Vector2f& p, const char* n): pos{p}, name{n}{}
     ButtonState(const sf::Vector2f& p, const sf::Vector2f s, const char* n):pos{p},size{s},name{n}{}
 };
 
-void setup_numpad(std::vector<ButtonState>& buttons);
-void draw_numpad(sf::RenderTarget& win, const std::vector<ButtonState>& buttons);
+void setup_numpad(std::array<ButtonState,19>& buttons);
+void draw_numpad(sf::RenderTarget& win, const std::array<ButtonState,19>& buttons);
 void draw_numdisplay(sf::RenderTarget& win, const std::string& d);
 
 

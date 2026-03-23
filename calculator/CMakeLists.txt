@@ -28,7 +28,7 @@ add_custom_command(
 target_compile_definitions(${PROJECT_NAME} PRIVATE RES_DIR="${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/res/")
 
 # set debug symbols and optimization level with warnings and c++20 standard
-target_compile_options(${PROJECT_NAME} PRIVATE -g -O0 -Wall -std=c++20)
+target_compile_options(${PROJECT_NAME} PRIVATE -g -O1 -Wall -std=c++20)
 
 # include headers sources
 target_include_directories(${PROJECT_NAME} PRIVATE "${PROJECT_SOURCE_DIR}/src"
