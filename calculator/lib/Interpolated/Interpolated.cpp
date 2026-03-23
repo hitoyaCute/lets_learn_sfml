@@ -75,7 +75,7 @@ const float easeInOutExponential(const float t){
 
 }; // namespace EasingFunc
 
-float getRatio(float t, Easing transition) {
+const float getRatio(const float t, const Easing transition) {
   switch (transition) {
     default:
       return t;

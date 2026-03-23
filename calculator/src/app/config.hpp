@@ -1,16 +1,20 @@
+#include <SFML/Graphics/Font.hpp>
+#include <SFML/Graphics/Color.hpp>
 #include <SFML/System/Vector2.hpp>
+#include <SFML/Window/ContextSettings.hpp>
 
 
 
 namespace conf {
 
 
-sf::Vector2u const window_size = {1280,800};
-sf::Vector2f const window_size_f{window_size};
+static sf::Vector2u const window_size = {491,511};
+static sf::Vector2f const window_size_f {window_size};
 
-
-
-
+static sf::Color const bg = {84, 8, 99};
+static sf::Color const button_bg = {146, 72, 122};
+static sf::Color const button_fg = {255, 211, 213};
+static sf::Font  const button_font {RES_DIR"/fonts/NerdFonts/HackNerdFont-Regular.ttf"};
 
 
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <chrono>
+#include <type_traits>
 namespace Interpolation {
 
 
@@ -16,12 +17,10 @@ enum Easing {
   
 };
 
-
-float getRatio(float t, Easing transition);
-
-
+const float getRatio(const float t, const Easing transition);
 
 template <typename T>
+requires std::is_arithmetic_v<T>
 class Interpolated {
   // starting value
   T start{};
@@ -32,8 +31,7 @@ class Interpolated {
   float initial_time{};
 
   float speed{1.f};
-
-  
+ 
     // get the time have passed after the transition
   [[nodiscard]] static float getCurrentTime(){
     // get current time
@@ -42,22 +40,18 @@ class Interpolated {
     // convert to float
     const auto seconds = std::chrono::duration_cast<std::chrono::duration<float>>(duration);
     return seconds.count();
-  
   }
 
   // get the time elapsed since the last value change
   [[nodiscard]] float getElapsedSec() const {
     return getCurrentTime() - initial_time;
   }
-
-
   
   void setValue(const T& new_val){
     start = getValue();
     end = new_val;
     initial_time = getCurrentTime();
   }
-
   
   // return the current value
   [[nodiscard]] T getValue() const {
@@ -69,19 +63,25 @@ class Interpolated {
 
     if (t >= 1.0f) {return end;}
 
-
-
     // compute interpolated value
-    const T delta{end - start};
+    const T delta{static_cast<T>(end - start)};
     return start + delta * getRatio(t, transition);
-  }
-  
+  } 
 
 public:
-  Easing transition{Easing::linear};
-  explicit Interpolated(const T& initial_val = {}):
+  Easing transition;
+  Interpolated(const T& initial_val = {}):
     start{initial_val},
-    end{start}{}
+    end{start},
+    transition{Easing::linear}{}
+  Interpolated(const T& initial_val, const Easing func):
+    start{initial_val},
+    end{start},
+    transition(func){}
+  Interpolated(const T& initial_val, const float duration, const Easing func = linear):
+    start{initial_val},
+    end{start},
+    transition(func){setDuration(duration);}
 
   void setDuration(float duration) {
     speed = 1.f / duration;

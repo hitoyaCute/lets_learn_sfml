@@ -11,10 +11,10 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # will be populated by the script to add all cpp files
 add_executable(${PROJECT_NAME}
     ./src/ui/shapes/basicShape.cpp
-    ./src/ui/Graphics/RenderWindow.cpp
     ./src/ui/Primitives/Button.cpp
-    ./src/app/window.cpp
+    ./src/app/event.cpp
     ./src/app/main.cpp
+    ./src/app/draw_numpad.cpp
     ./lib/Interpolated/Interpolated.cpp)
 
 # copy assets to output directory
