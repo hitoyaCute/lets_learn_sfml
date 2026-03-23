@@ -32,7 +32,7 @@ void process_event(sf::RenderWindow &win, std::vector<ButtonState>& buttons) {
             auto mouse_pos = (sf::Vector2f)sf::Mouse::getPosition(win);
             ButtonState* button = get_button_at(mouse_pos, buttons);
             if (button and mouse->button == sf::Mouse::Button::Left) {
-                printf("pressed\n");
+                // printf("pressed\n");
                 button->is_click = true;
                 button->color_scale.setDuration(0.4);
                 button->color_scale = -1;
@@ -41,7 +41,7 @@ void process_event(sf::RenderWindow &win, std::vector<ButtonState>& buttons) {
             auto mouse_pos = (sf::Vector2f)sf::Mouse::getPosition(win);
             ButtonState* button = get_button_at(mouse_pos, buttons);
             if (button and mouse->button == sf::Mouse::Button::Left) {
-                printf("released\n");
+                // printf("released\n");
                 button->is_click = false;
                 button->color_scale.setDuration(0.01);
                 button->color_scale = 0;
@@ -55,6 +55,7 @@ void process_event(sf::RenderWindow &win, std::vector<ButtonState>& buttons) {
         const bool inside = sf::FloatRect{button.pos, button.size}.contains(mouse_pos);
         if(not inside and button.is_hover) {
             button.is_hover = false;
+            button.is_click = false;
             button.border_scale.setDuration(0.01);
             button.color_scale.setDuration(0.01);
             button.color_scale  = 0;

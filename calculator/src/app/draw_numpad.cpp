@@ -90,7 +90,7 @@ void draw_numpad(sf::RenderTarget& win, const std::vector<ButtonState>& buttons)
         // change colors for highlighting
         // make it slightly darker
         const float scale = (float)button.border_scale / 255.f;
-        button_bg -= Color{50,50,50,0} * (float)button.color_scale;
+        button_bg -= Color{50,50,50,0} * (255*(float)button.is_click);
         border_col += border_col * scale;
         const float final_border_thickness = 
             Interpolation::EasingFunc::easeOutElastic(scale) * border_thickness * 2 + border_thickness;
