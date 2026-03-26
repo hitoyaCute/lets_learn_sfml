@@ -71,17 +71,15 @@ public:
 
 
 void draw_numpad(sf::RenderTarget& win, const std::array<ButtonState,19>& buttons) {
-    const ulong vect_count = 8 * 4;
-    
-    const float border_thickness = 0.9;
-    const float r = 23.f;
+    static const float border_radius = 23.f;
+    static sf::Text text{conf::button_font};
+    static const float border_thickness = 1.3;
+    static const ulong button_vertex_count = 8 * 4;
+    static sf::VertexArray button_vertex{sf::PrimitiveType::TriangleFan, button_vertex_count};
 
-    sf::VertexArray button_vertex{sf::PrimitiveType::TriangleFan, vect_count};
-
-    sf::Text t{conf::button_font};
-    t.setStyle(sf::Text::Style::Bold);
-    t.setCharacterSize(20);
-    t.setFillColor(conf::button_fg);
+    text.setStyle(sf::Text::Style::Bold);
+    text.setCharacterSize(20);
+    text.setFillColor(conf::button_fg);
 
 
     for (const auto& button: buttons) {
@@ -98,7 +96,7 @@ void draw_numpad(sf::RenderTarget& win, const std::array<ButtonState,19>& button
             Interpolation::EasingFunc::easeOutElastic(scale) * border_thickness * 2 + border_thickness;
 
         // draw the border
-        Calc::Shape::CreateRoundedRect(button_vertex, vect_count, r + border_thickness,
+        Calc::Shape::CreateRoundedRect(button_vertex, button_vertex_count, border_radius + border_thickness,
                 sf::Vector2f{button.size.x + final_border_thickness * 2,
                              button.size.y + final_border_thickness * 2},
                 sf::Vector2f{button.pos.x - final_border_thickness,
@@ -107,15 +105,15 @@ void draw_numpad(sf::RenderTarget& win, const std::array<ButtonState,19>& button
         win.draw(button_vertex);
 
         // draw the button bg
-        Calc::Shape::CreateRoundedRect(button_vertex, vect_count, r, button.size, button.pos, button_bg);
+        Calc::Shape::CreateRoundedRect(button_vertex, button_vertex_count, border_radius, button.size, button.pos, button_bg);
         win.draw(button_vertex);
 
         // prepare the text, and make sure its centered
-        t.setString(button.name);
-        t.setPosition(sf::Vector2f{button.pos.x, button.pos.y - 3} + (.5f * button.size));
-        t.setOrigin(t.getLocalBounds().size / 2.f);
+        text.setString(button.name);
+        text.setPosition(sf::Vector2f{button.pos.x, button.pos.y - 3} + (.5f * button.size));
+        text.setOrigin(text.getLocalBounds().size / 2.f);
         
-        win.draw(t);
+        win.draw(text);
     }
 }
 

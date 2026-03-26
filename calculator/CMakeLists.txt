@@ -14,6 +14,7 @@ add_executable(${PROJECT_NAME}
     ./src/ui/Primitives/Button.cpp
     ./src/app/event.cpp
     ./src/app/main.cpp
+    ./src/app/draw_numdisplay.cpp
     ./src/app/draw_numpad.cpp
     ./lib/Interpolated/Interpolated.cpp)
 

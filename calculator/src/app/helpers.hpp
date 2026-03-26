@@ -30,4 +30,8 @@ void setup_numpad(std::array<ButtonState,19>& buttons);
 void draw_numpad(sf::RenderTarget& win, const std::array<ButtonState,19>& buttons);
 void draw_numdisplay(sf::RenderTarget& win, const std::string& d);
 
-
+inline void setFillColor(sf::VertexArray& arr, const sf::Color& col) {
+    for (size_t i = 0; i < arr.getVertexCount(); ++i) {
+        arr[i].color = col;
+    }
+}

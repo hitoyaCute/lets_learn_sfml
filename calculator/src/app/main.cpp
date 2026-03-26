@@ -1,19 +1,10 @@
+#include <SFML/Graphics/RenderStates.hpp>
 #include <array>
 #include <cstdio>
-#include <SFML/Window/Mouse.hpp>
-#include <SFML/Graphics/Text.hpp>
-#include <SFML/Graphics/Font.hpp>
-#include <SFML/Graphics/Image.hpp>
-#include <SFML/System/Vector2.hpp>
-#include <SFML/Graphics/Color.hpp>
-#include <SFML/Graphics/Sprite.hpp>
-#include <SFML/Window/WindowEnums.hpp>
-#include <SFML/Graphics/CircleShape.hpp>
-#include <SFML/Graphics/VertexArray.hpp>
-#include <SFML/Graphics/RenderWindow.hpp>
-#include <SFML/Graphics/PrimitiveType.hpp>
-#include <SFML/Graphics/RenderTexture.hpp>
-#include <SFML/Window/ContextSettings.hpp>
+#include <SFML/Window.hpp>
+#include <SFML/Graphics.hpp>
+#include <SFML/System.hpp>
+
 
 #include "event.hpp"
 #include "config.hpp"
@@ -23,28 +14,44 @@
 #define unpack_vector2(ver) (ver).x, (ver).y
 
 void update_cursor(sf::VertexArray& arr, const sf::Vector2f& pos);
-void setFillColor(sf::VertexArray& arr, const sf::Color& col);
 
 int main() {
-    printf("sf::RenderTexture::getMaximumAntiAliasingLevel() = %d\n", sf::RenderTexture::getMaximumAntiAliasingLevel());
-    sf::RenderWindow window{sf::VideoMode(conf::window_size), "Calculator", sf::Style::None};
-    sf::RenderTexture wintex{conf::window_size};
-    wintex.setSmooth(true);
+    sf::RenderWindow window{sf::VideoMode(conf::window_size), conf::project_name, sf::Style::None};
 
-    sf::Texture texture{sf::Image(conf::window_size,sf::Color::White)};//this is can also be updated to the correct size later, but might be helpful for debugging now
-    texture.setSmooth(true);
+    // scalar
+    constexpr sf::Vector2u ss_size = 2u * conf::window_size;
+    sf::RenderTexture wintex{ss_size};
+    wintex.setSmooth(true);
+ 
+    /************** load FXAA shader ****************/
+    sf::Shader fxaa;
+    if (!fxaa.loadFromFile(RES_DIR"/shader/fxaa.frag", sf::Shader::Type::Fragment)) {
+        printf("Failed to load FXAA shader");
+        return -1;
+    }
+
+    // Set the texel size once (or update if window resizes)
+    fxaa.setUniform("resolution", sf::Glsl::Vec2(
+        (float)ss_size.x,
+        (float)ss_size.y
+    ));
+
+    sf::RenderStates states;
+    states.shader = &fxaa;
+    /************** load FXAA shader ****************/
+
+    sf::Sprite sprite(wintex.getTexture());
+    // sprite.setScale({0.5f,0.5f});
 
     window.setMouseCursorVisible(false);
     window.setFramerateLimit(60);
     // window.setVerticalSyncEnabled(true);
-
+    
+    // global button ref
     std::array<ButtonState, 19> buttons;
     setup_numpad(buttons);
 
-    sf::Sprite sprite (texture);
 
-    sf::CircleShape circle(16,16);
-    
     sf::VertexArray cursor{sf::PrimitiveType::TriangleFan, 7};
     setFillColor(cursor, sf::Color::White);
 
@@ -59,22 +66,13 @@ int main() {
         update_cursor(cursor, pos);
 
         draw_numpad(wintex,buttons);
-        // draw_numdisplay(window);
+        draw_numdisplay(wintex, " ");
         
-        wintex.draw(circle);
         wintex.draw(cursor);
         wintex.display();
 
-        texture.update(wintex.getTexture());
-
-        window.draw(sprite);
+        window.draw(sprite, states);
         window.display();
-    }
-}
-
-void setFillColor(sf::VertexArray& arr, const sf::Color& col) {
-    for (size_t i = 0; i < arr.getVertexCount(); ++i) {
-        arr[i].color = col;
     }
 }
 

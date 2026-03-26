@@ -3,13 +3,11 @@
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Window/ContextSettings.hpp>
 
-
-
 namespace conf {
 
-
-static sf::Vector2u const window_size = {491,511};
-static sf::Vector2f const window_size_f {window_size};
+static const char* const project_name = "Calculator";
+static sf::Vector2u constexpr window_size = {491,511};
+static sf::Vector2f constexpr window_size_f {window_size};
 
 static sf::Color const bg = {84, 8, 99};
 static sf::Color const button_bg = {146, 72, 122};
