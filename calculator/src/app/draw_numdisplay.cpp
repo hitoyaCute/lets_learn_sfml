@@ -1,8 +1,10 @@
 #include "app/helpers.hpp"
 #include "app/config.hpp"
+#include "ui/shapes/GlShapes.hpp"
 #include "ui/shapes/basicShape.hpp"
 
 #include <SFML/Graphics/PrimitiveType.hpp>
+#include <SFML/Graphics/Rect.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/Text.hpp>
 #include <SFML/Graphics/VertexArray.hpp>
@@ -26,35 +28,31 @@ inline void draw_digits(sf::RenderTarget& win, const char*& value, const size_t&
 
 // \@brief make stuff
 void draw_numdisplay(sf::RenderTarget &win, const std::string &d) {
-    static const ulong display_vertex_count = 8 * 4;
-    static sf::VertexArray display_vertex{sf::PrimitiveType::TriangleFan, display_vertex_count};
-    static const float border_thickness = 0.9;
-    static const float border_radius = 23.f;
+    constexpr float border_thickness = 1;
+    constexpr sf::Vector2f border_thickness_vect{border_thickness, border_thickness};
+    constexpr float corner_radius = 25.f;
     static const sf::Vector2f size{406, 75};
     static const sf::Vector2f pos{37, 14};
 
-    // draw border
-    Calc::Shape::CreateRoundedRect(
-            display_vertex,
-            display_vertex_count,
-            border_radius + border_thickness,
-            {size.x + border_thickness * 2,
-             size.y + border_thickness * 2},
-            {pos.x - border_thickness,
-             pos.y - border_thickness},
+    MEU::GLShapes::draw_rounded_rect(
+            win,
+            pos - border_thickness_vect,
+            size + border_thickness_vect * 2.f,
+            corner_radius + border_thickness,
             sf::Color::White);
-    win.draw(display_vertex);
-    // draw display
-    Calc::Shape::CreateRoundedRect(
-            display_vertex,
-            display_vertex_count,
-            border_radius,
-            size, pos,
-            conf::button_bg);
-    win.draw(display_vertex);
+    MEU::GLShapes::draw_rounded_rect(win, pos, size, corner_radius, conf::button_bg);
 }
 
 /*
+
+
+
+
+
+
+
+
+
 58
 |    ###################           |    1111111111111111111     
     #####################              111111111111111111111    

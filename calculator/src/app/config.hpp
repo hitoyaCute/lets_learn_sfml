@@ -1,7 +1,5 @@
-#include <SFML/Graphics/Font.hpp>
-#include <SFML/Graphics/Color.hpp>
-#include <SFML/System/Vector2.hpp>
-#include <SFML/Window/ContextSettings.hpp>
+#include <SFML/Graphics.hpp>
+#include <SFML/System.hpp>
 
 namespace conf {
 
@@ -13,7 +11,6 @@ static sf::Color const bg = {84, 8, 99};
 static sf::Color const button_bg = {146, 72, 122};
 static sf::Color const button_fg = {255, 211, 213};
 static sf::Font  const button_font {RES_DIR"/fonts/NerdFonts/HackNerdFont-Regular.ttf"};
-
 
 
 

@@ -1,14 +1,18 @@
 #include "config.hpp"
 #include "helpers.hpp"
+#include "ui/shapes/GlShapes.hpp"
 #include "ui/shapes/basicShape.hpp"
 #include "Interpolated/Interpolated.hpp"
 
+#include <SFML/Graphics/Rect.hpp>
+#include <SFML/Graphics/RenderStates.hpp>
 #include <array>
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Graphics/Shape.hpp>
 #include <SFML/Graphics/VertexArray.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/PrimitiveType.hpp>
+
 
 void setup_numpad(std::array<ButtonState,19>& buttons) {
     // array struct
@@ -71,42 +75,38 @@ public:
 
 
 void draw_numpad(sf::RenderTarget& win, const std::array<ButtonState,19>& buttons) {
-    static const float border_radius = 23.f;
+    static const float corner_radius = 25.f;
     static sf::Text text{conf::button_font};
-    static const float border_thickness = 1.3;
-    static const ulong button_vertex_count = 8 * 4;
-    static sf::VertexArray button_vertex{sf::PrimitiveType::TriangleFan, button_vertex_count};
+    constexpr float border_thickness = 1;
 
     text.setStyle(sf::Text::Style::Bold);
     text.setCharacterSize(20);
     text.setFillColor(conf::button_fg);
+    text.setOutlineColor(sf::Color::Black);
+    text.setOutlineThickness(1.5);
 
 
     for (const auto& button: buttons) {
-        Color border_col {255,255,255};
         Color button_bg = conf::button_bg;
 
         // change colors for highlighting
         const float scale = (float)button.border_scale / 255.f; // fetch and mutate the scalar
         button_bg -= Color{50,50,50,0} * (255*(float)button.is_click); // same here
-        border_col += border_col * scale;
         // we use easing function on a linear easing function to allow a more
         // fun interpolation
         const float final_border_thickness = 
-            Interpolation::EasingFunc::easeOutElastic(scale) * border_thickness * 2 + border_thickness;
+            (Interpolation::EasingFunc::easeOutElastic(scale) * border_thickness * 2) + border_thickness;
 
         // draw the border
-        Calc::Shape::CreateRoundedRect(button_vertex, button_vertex_count, border_radius + border_thickness,
-                sf::Vector2f{button.size.x + final_border_thickness * 2,
-                             button.size.y + final_border_thickness * 2},
+        MEU::GLShapes::draw_rounded_rect(win,
                 sf::Vector2f{button.pos.x - final_border_thickness,
                              button.pos.y - final_border_thickness},
-                border_col);
-        win.draw(button_vertex);
+                sf::Vector2f{button.size.x + final_border_thickness * 2,
+                             button.size.y + final_border_thickness * 2},
+                corner_radius);
 
         // draw the button bg
-        Calc::Shape::CreateRoundedRect(button_vertex, button_vertex_count, border_radius, button.size, button.pos, button_bg);
-        win.draw(button_vertex);
+        MEU::GLShapes::draw_rounded_rect(win, button.pos, button.size, corner_radius, button_bg);
 
         // prepare the text, and make sure its centered
         text.setString(button.name);

@@ -1,9 +1,9 @@
-#include <SFML/Graphics/RenderStates.hpp>
 #include <array>
 #include <cstdio>
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
+#include <SFML/Graphics/RenderStates.hpp>
 
 
 #include "event.hpp"
@@ -12,38 +12,10 @@
 #include "ui/shapes/basicShape.hpp"
 
 #define unpack_vector2(ver) (ver).x, (ver).y
-
 void update_cursor(sf::VertexArray& arr, const sf::Vector2f& pos);
 
 int main() {
     sf::RenderWindow window{sf::VideoMode(conf::window_size), conf::project_name, sf::Style::None};
-
-    // scalar
-    constexpr sf::Vector2u ss_size = 2u * conf::window_size;
-    sf::RenderTexture wintex{ss_size};
-    wintex.setSmooth(true);
- 
-    /************** load FXAA shader ****************/
-    sf::Shader fxaa;
-    if (!fxaa.loadFromFile(RES_DIR"/shader/fxaa.frag", sf::Shader::Type::Fragment)) {
-        printf("Failed to load FXAA shader");
-        return -1;
-    }
-
-    // Set the texel size once (or update if window resizes)
-    fxaa.setUniform("resolution", sf::Glsl::Vec2(
-        (float)ss_size.x,
-        (float)ss_size.y
-    ));
-
-    sf::RenderStates states;
-    states.shader = &fxaa;
-    /************** load FXAA shader ****************/
-
-    sf::Sprite sprite(wintex.getTexture());
-    // sprite.setScale({0.5f,0.5f});
-
-    window.setMouseCursorVisible(false);
     window.setFramerateLimit(60);
     // window.setVerticalSyncEnabled(true);
     
@@ -52,26 +24,21 @@ int main() {
     setup_numpad(buttons);
 
 
-    sf::VertexArray cursor{sf::PrimitiveType::TriangleFan, 7};
-    setFillColor(cursor, sf::Color::White);
+    // sf::VertexArray cursor{sf::PrimitiveType::TriangleFan, 7};
+    // setFillColor(cursor, sf::Color{200,200,200});
 
-    sf::Vector2f pos;
+    // sf::Vector2f pos;
     while (window.isOpen()) {
         window.clear(conf::bg);
-        wintex.clear(conf::bg);
 
         process_event(window, buttons);
-        
-        pos = (sf::Vector2f)sf::Mouse::getPosition(window);
-        update_cursor(cursor, pos);
+        // pos = (sf::Vector2f)sf::Mouse::getPosition(window);
+        // update_cursor(cursor, pos);
 
-        draw_numpad(wintex,buttons);
-        draw_numdisplay(wintex, " ");
+        draw_numpad(window,buttons);
+        draw_numdisplay(window, " ");
         
-        wintex.draw(cursor);
-        wintex.display();
-
-        window.draw(sprite, states);
+        // window.draw(cursor);
         window.display();
     }
 }
