@@ -6,6 +6,7 @@
 
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/Graphics/RenderStates.hpp>
+#include <SFML/Window/Keyboard.hpp>
 #include <array>
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Graphics/Shape.hpp>
@@ -23,30 +24,31 @@ void setup_numpad(std::array<ButtonState,19>& buttons) {
     // 316  1   2   3   /
     // 387  0   .   [ = ]
     
-             // row 103
-    buttons[0].pos = { 37, 103}; buttons[0].name = "Del";
-    buttons[1].pos = {141, 103}; buttons[1].name = "C";
-    buttons[2].pos = {245, 103}; buttons[2].name = "%"; 
-    buttons[3].pos = {349, 103}; buttons[3].name = "+"; 
+    // row 103
+    using enum sf::Keyboard::Key;
+    buttons[0] = ButtonState{.pos = { 37, 103}, .name = "Del", .activation_key = Delete};
+    buttons[1] = ButtonState{.pos = {141, 103}, .name = "C"};
+    buttons[2] = ButtonState{.pos = {245, 103}, .name = "%"};
+    buttons[3] = ButtonState{.pos = {349, 103}, .name = "+"};
     // row 174
-    buttons[4].pos = { 37, 174}; buttons[4].name = "7"; 
-    buttons[5].pos = {141, 174}; buttons[5].name = "8"; 
-    buttons[6].pos = {245, 174}; buttons[6].name = "9"; 
-    buttons[7].pos = {349, 174}; buttons[7].name = "-"; 
-    // row 245 [0].pos = 
-    buttons[8].pos  = { 37, 245}; buttons[8].name = "4"; 
-    buttons[9].pos  = {141, 245}; buttons[9].name = "5"; 
-    buttons[10].pos = {245, 245}; buttons[10].name = "6"; 
-    buttons[11].pos = {349, 245}; buttons[11].name = "*"; 
-    // row 316 [0].pos = 
-    buttons[12].pos = { 37, 316}; buttons[12].name = "1"; 
-    buttons[13].pos = {141, 316}; buttons[13].name = "2"; 
-    buttons[14].pos = {245, 316}; buttons[14].name = "3"; 
-    buttons[15].pos = {349, 316}; buttons[15].name = "/"; 
-    // row 387 [0].pos = 
-    buttons[16].pos = { 37, 387}; buttons[16].name = "0"; 
-    buttons[17].pos = {141, 387}; buttons[17].name = "."; 
-    buttons[18].pos = {245, 387}; buttons[18].size = {198, 60}; buttons[18].name = "=";
+    buttons[4] = ButtonState{.pos = { 37, 174}, .name = "7", .activation_key = Num7};
+    buttons[5] = ButtonState{.pos = {141, 174}, .name = "8", .activation_key = Num8};
+    buttons[6] = ButtonState{.pos = {245, 174}, .name = "9", .activation_key = Num9};
+    buttons[7] = ButtonState{.pos = {349, 174}, .name = "-"};
+    // row 245 
+    buttons[8] = ButtonState{.pos  = { 37, 245}, .name = "4", .activation_key = Num4};
+    buttons[9] = ButtonState{.pos  = {141, 245}, .name = "5", .activation_key = Num5};
+    buttons[10] = ButtonState{.pos = {245, 245}, .name = "6", .activation_key = Num6};
+    buttons[11] = ButtonState{.pos = {349, 245}, .name = "*"};
+    // row 316
+    buttons[12] = ButtonState{.pos = { 37, 316}, .name = "1", .activation_key = Num1};
+    buttons[13] = ButtonState{.pos = {141, 316}, .name = "2", .activation_key = Num2};
+    buttons[14] = ButtonState{.pos = {245, 316}, .name = "3", .activation_key = Num3};
+    buttons[15] = ButtonState{.pos = {349, 316}, .name = "/"};
+    // row 387
+    buttons[16] = ButtonState{.pos = { 37, 387}, .name = "0", .activation_key = Num0};
+    buttons[17] = ButtonState{.pos = {141, 387}, .name = "."};
+    buttons[18] = ButtonState{.pos = {245, 387}, .size = {198, 60}, .name = "="};
 }
 
 class Color : public sf::Color {
@@ -95,7 +97,7 @@ void draw_numpad(sf::RenderTarget& win, const std::array<ButtonState,19>& button
         // we use easing function on a linear easing function to allow a more
         // fun interpolation
         const float final_border_thickness = 
-            (Interpolation::EasingFunc::easeOutElastic(scale) * border_thickness * 2) + border_thickness;
+            (Interpolation::EasingFunc::easeOutElastic(scale) * border_thickness * 3) + border_thickness;
 
         // draw the border
         MEU::GLShapes::draw_rounded_rect(win,
@@ -110,7 +112,7 @@ void draw_numpad(sf::RenderTarget& win, const std::array<ButtonState,19>& button
 
         // prepare the text, and make sure its centered
         text.setString(button.name);
-        text.setPosition(sf::Vector2f{button.pos.x, button.pos.y - 3} + (.5f * button.size));
+        text.setPosition(sf::Vector2f{button.pos.x, button.pos.y - 1} + (.5f * button.size));
         text.setOrigin(text.getLocalBounds().size / 2.f);
         
         win.draw(text);

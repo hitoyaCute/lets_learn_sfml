@@ -1,4 +1,3 @@
-#include "app/helpers.hpp"
 #include "app/config.hpp"
 #include "ui/shapes/GlShapes.hpp"
 #include "ui/shapes/basicShape.hpp"
@@ -9,6 +8,7 @@
 #include <SFML/Graphics/Text.hpp>
 #include <SFML/Graphics/VertexArray.hpp>
 #include <SFML/System/Vector2.hpp>
+#include <string>
 
 [[maybe_unused]] const char* valid_char {
     "0123456789"                         // alpha numerals
@@ -33,6 +33,11 @@ void draw_numdisplay(sf::RenderTarget &win, const std::string &d) {
     constexpr float corner_radius = 25.f;
     static const sf::Vector2f size{406, 75};
     static const sf::Vector2f pos{37, 14};
+    static sf::Text text{conf::font};
+
+    text.setString(d);
+    text.setCharacterSize(70);
+    text.setPosition(pos + sf::Vector2f{14.f,-6.3f});
 
     MEU::GLShapes::draw_rounded_rect(
             win,
@@ -41,6 +46,7 @@ void draw_numdisplay(sf::RenderTarget &win, const std::string &d) {
             corner_radius + border_thickness,
             sf::Color::White);
     MEU::GLShapes::draw_rounded_rect(win, pos, size, corner_radius, conf::button_bg);
+    win.draw(text);
 }
 
 /*
