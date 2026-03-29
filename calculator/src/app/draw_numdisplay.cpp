@@ -1,3 +1,4 @@
+#include "Interpolated/Interpolated.hpp"
 #include "app/config.hpp"
 #include "ui/shapes/GlShapes.hpp"
 #include "ui/shapes/basicShape.hpp"
@@ -8,6 +9,7 @@
 #include <SFML/Graphics/Text.hpp>
 #include <SFML/Graphics/VertexArray.hpp>
 #include <SFML/System/Vector2.hpp>
+#include <algorithm>
 #include <string>
 
 [[maybe_unused]] const char* valid_char {
@@ -26,18 +28,31 @@ inline void draw_digits(sf::RenderTarget& win, const char*& value, const size_t&
     // sf::VertexArray digit{sf::PrimitiveType::Triangles, idk};
 }
 
+int old_width_const = 0;
+Interpolation::Interpolated<float> old_width = {7, 0.9, Interpolation::easeOutElastic};
+
 // \@brief make stuff
-void draw_numdisplay(sf::RenderTarget &win, const std::string &d) {
+void draw_numdisplay(sf::RenderTarget &win, const std::string d) {
+    // constexpr int max_text_len = 7;
+    constexpr float corner_radius = 25.f;
     constexpr float border_thickness = 1;
     constexpr sf::Vector2f border_thickness_vect{border_thickness, border_thickness};
-    constexpr float corner_radius = 25.f;
-    static const sf::Vector2f size{406, 75};
-    static const sf::Vector2f pos{37, 14};
-    static sf::Text text{conf::font};
+    constexpr sf::Vector2f size{406, 75};
+    constexpr sf::Vector2f pos{37, 14};
 
+    sf::Text text{conf::font};
     text.setString(d);
     text.setCharacterSize(70);
-    text.setPosition(pos + sf::Vector2f{14.f,-6.3f});
+
+    sf::Vector2f text_offset = sf::Vector2f{size.x - 22.f,-8.3f} - sf::Vector2f{text.getGlobalBounds().size.x * (old_width / old_width_const),0};
+
+    if (d.length() != old_width_const) {
+        old_width = d.length();
+        old_width_const = d.length();
+    }
+
+    // hopefully justify the text to the right
+    text.setPosition(pos + text_offset);
 
     MEU::GLShapes::draw_rounded_rect(
             win,

@@ -26,27 +26,27 @@ void setup_numpad(std::array<ButtonState,19>& buttons) {
     
     // row 103
     using enum sf::Keyboard::Key;
-    buttons[0] = ButtonState{.pos = { 37, 103}, .name = "Del", .activation_key = Delete};
+    buttons[0] = ButtonState{.pos = { 37, 103}, .name = "Del"};
     buttons[1] = ButtonState{.pos = {141, 103}, .name = "C"};
     buttons[2] = ButtonState{.pos = {245, 103}, .name = "%"};
     buttons[3] = ButtonState{.pos = {349, 103}, .name = "+"};
     // row 174
-    buttons[4] = ButtonState{.pos = { 37, 174}, .name = "7", .activation_key = Num7};
-    buttons[5] = ButtonState{.pos = {141, 174}, .name = "8", .activation_key = Num8};
-    buttons[6] = ButtonState{.pos = {245, 174}, .name = "9", .activation_key = Num9};
+    buttons[4] = ButtonState{.pos = { 37, 174}, .name = "7"};
+    buttons[5] = ButtonState{.pos = {141, 174}, .name = "8"};
+    buttons[6] = ButtonState{.pos = {245, 174}, .name = "9"};
     buttons[7] = ButtonState{.pos = {349, 174}, .name = "-"};
     // row 245 
-    buttons[8] = ButtonState{.pos  = { 37, 245}, .name = "4", .activation_key = Num4};
-    buttons[9] = ButtonState{.pos  = {141, 245}, .name = "5", .activation_key = Num5};
-    buttons[10] = ButtonState{.pos = {245, 245}, .name = "6", .activation_key = Num6};
+    buttons[8] = ButtonState{.pos  = { 37, 245}, .name = "4"};
+    buttons[9] = ButtonState{.pos  = {141, 245}, .name = "5"};
+    buttons[10] = ButtonState{.pos = {245, 245}, .name = "6"};
     buttons[11] = ButtonState{.pos = {349, 245}, .name = "*"};
     // row 316
-    buttons[12] = ButtonState{.pos = { 37, 316}, .name = "1", .activation_key = Num1};
-    buttons[13] = ButtonState{.pos = {141, 316}, .name = "2", .activation_key = Num2};
-    buttons[14] = ButtonState{.pos = {245, 316}, .name = "3", .activation_key = Num3};
+    buttons[12] = ButtonState{.pos = { 37, 316}, .name = "1"};
+    buttons[13] = ButtonState{.pos = {141, 316}, .name = "2"};
+    buttons[14] = ButtonState{.pos = {245, 316}, .name = "3"};
     buttons[15] = ButtonState{.pos = {349, 316}, .name = "/"};
     // row 387
-    buttons[16] = ButtonState{.pos = { 37, 387}, .name = "0", .activation_key = Num0};
+    buttons[16] = ButtonState{.pos = { 37, 387}, .name = "0"};
     buttons[17] = ButtonState{.pos = {141, 387}, .name = "."};
     buttons[18] = ButtonState{.pos = {245, 387}, .size = {198, 60}, .name = "="};
 }

@@ -20,14 +20,17 @@ struct ButtonState {
     // scale that defines how much is the change
     // 0 is no change, 255 is the max change
     Interpolation::Interpolated<uint8_t> color_scale {0, 0.4f};
-    sf::Keyboard::Key activation_key = sf::Keyboard::Key::Unknown;
+    // if its key is being hold
+    bool is_key_pressed = false;
+    // if the mouse is abouve the button
     bool is_hover = false;
+    // if being hold using mouse
     bool is_click = false;
 };
 
 void setup_numpad(std::array<ButtonState,19>& buttons);
 void draw_numpad(sf::RenderTarget& win, const std::array<ButtonState,19>& buttons);
-void draw_numdisplay(sf::RenderTarget& win, const std::string& d);
+void draw_numdisplay(sf::RenderTarget& win, const std::string d);
 
 inline void setFillColor(sf::VertexArray& arr, const sf::Color& col) {
     for (size_t i = 0; i < arr.getVertexCount(); ++i) {

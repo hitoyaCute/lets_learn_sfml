@@ -87,6 +87,13 @@ public:
     speed = 1.f / duration;
   }
 
+  T get_start() const {
+    return start;
+  }
+  T get_end() const {
+    return end;
+  }
+
   // reset everything and return the value to the start
   void reset(const T& val) {
     initial_time = getCurrentTime();
