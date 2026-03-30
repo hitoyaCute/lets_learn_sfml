@@ -28,7 +28,7 @@ inline void draw_digits(sf::RenderTarget& win, const char*& value, const size_t&
     // sf::VertexArray digit{sf::PrimitiveType::Triangles, idk};
 }
 
-int old_width_const = 0;
+unsigned int old_width_const = 0;
 Interpolation::Interpolated<float> old_width = {7, 0.9, Interpolation::easeOutElastic};
 
 // \@brief make stuff
@@ -46,7 +46,7 @@ void draw_numdisplay(sf::RenderTarget &win, const std::string d) {
 
     sf::Vector2f text_offset = sf::Vector2f{size.x - 22.f,-8.3f} - sf::Vector2f{text.getGlobalBounds().size.x * (old_width / old_width_const),0};
 
-    if (d.length() != old_width_const) {
+    if (d.length() != static_cast<size_t>(old_width_const)) {
         old_width = d.length();
         old_width_const = d.length();
     }

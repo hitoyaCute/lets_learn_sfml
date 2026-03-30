@@ -1,5 +1,6 @@
 #include <array>
 #include <cctype>
+#include <cmath>
 #include <cstdio>
 #include <SFML/Window.hpp>
 #include <SFML/System.hpp>
@@ -50,7 +51,34 @@ bool is_all_digits(const std::string& s) {
     return true;
 }
 inline float parse_to_float(const std::string& d) {
-    return atof(d.c_str());
+    return atof(("0"+d).c_str());
+}
+
+float eval(float A, float B, char ope) {
+    if (ope == '+') return A + B;
+    if (ope == '-') return A - B;
+    if (ope == '*') return A * B;
+    if (ope == '/') return A / B;
+
+    return 0;
+}
+
+std::string smart_to_str(double v) {
+    v = std::roundf(v*100)/100;
+    // if int
+    if (long(v) == v) {
+        return std::to_string(long(v));
+    }
+
+    std::string s = std::to_string(v);
+
+    s.erase(s.find_last_not_of('0') + 1, std::string::npos);
+    
+    if (s.back() == '.') {
+        s.pop_back();
+    }
+
+    return s;
 }
 
 void event_handler(const event event_type) {
@@ -58,8 +86,17 @@ void event_handler(const event event_type) {
     auto& view = CalcState.view;
     auto& ope = CalcState.ope;
     auto& A_is_entered = CalcState.A_is_entered;
+
     if (CalcState.done or name == "C") {
-        CalcState = GlobalState{};
+        if (name == "C") CalcState = GlobalState{};
+        else if (name == "Del" and is_all_digits(view)) {
+            ope = '\0';
+            CalcState.done = 0;
+            A_is_entered = 0;
+            view.pop_back();
+        } else if (name == "Del" and not is_all_digits(view)) {
+            CalcState = GlobalState{};
+        }
     } else if (is_all_digits(name) and name != ".") {
         if (view.length() >= 6){}
         else {
@@ -77,29 +114,72 @@ void event_handler(const event event_type) {
         } else
         view.pop_back();
     } else if (name == "+") {
-        CalcState.A = parse_to_float(view);
-        view = "+";
+        if (not A_is_entered) {
+            CalcState.A = parse_to_float(view);
+            view = "+";
+        } else {
+            if (CalcState.B == 0) CalcState.B = parse_to_float(view);
+            const auto d = eval(CalcState.A, CalcState.B, '+');
+            CalcState.A = d;
+            view = smart_to_str(d);
+            // CalcState.done = 1;
+        }
         ope = '+';
         A_is_entered = 1;
     } else if (name == "-") {
-        if (not A_is_entered) CalcState.A = parse_to_float(view);
-        view = "-";
+        if (not A_is_entered) {
+            CalcState.A = parse_to_float(view);
+            view = "-";
+        } else {
+            if (CalcState.B == 0) CalcState.B = parse_to_float(view);
+            const auto d = eval(CalcState.A, CalcState.B, '-');
+            CalcState.A = d;
+            view = smart_to_str(d);
+            // CalcState.done = 1;
+        }
         ope = '-';
         A_is_entered = 1;
     } else if (name == "*") {
-        if (not A_is_entered) CalcState.A = parse_to_float(view);
-        view = "*";
+        if (not A_is_entered) {
+            CalcState.A = parse_to_float(view);
+            view = "*";
+        } else {
+            if (CalcState.B == 0) CalcState.B = parse_to_float(view);
+            const auto d = eval(CalcState.A, CalcState.B, '*');
+            CalcState.A = d;
+            view = smart_to_str(d);
+            // CalcState.done = 1;
+        }
         ope = '*';
         A_is_entered = 1;
     } else if (name == "/") {
-        if (not A_is_entered) CalcState.A = parse_to_float(view);
-        view = "/";
+        if (not A_is_entered) {
+            CalcState.A = parse_to_float(view);
+            view = "/";
+        } else {
+            if (CalcState.B == 0) CalcState.B = parse_to_float(view);
+            if (CalcState.B == 0) {
+                view = "x/0 Err";
+                CalcState.done = 1;
+            } else {
+                const auto d = eval(CalcState.A, CalcState.B, '/');
+                CalcState.A = d;
+                view = smart_to_str(d);
+            }
+        }
         ope = '/';
         A_is_entered = 1;
     }  else if (name == "%" and not A_is_entered) {
-        view = std::to_string(parse_to_float(view) / 100.f);
+        view = smart_to_str(parse_to_float(view) / 100.f);
         ope = '%';
         CalcState.done = 1;
+    } else if (name == "=" and A_is_entered and ope != '\0') {
+        CalcState.done = 1;
+        auto b = parse_to_float(view);
+        if (b == 0 and ope == '/')
+            view = "x/0 Err";
+        else
+           view = smart_to_str(eval(CalcState.A, b, ope));
     }
 }
 
